@@ -12,6 +12,7 @@ An end-to-end analytics pipeline on Toronto's subway delay data: raw CSVs in, te
 - **65% of logged incidents caused no delay at all.** They are real events (a disorderly patron, an alarm) that didn't stop service, so counting incidents and measuring lost time give very different pictures.
 - **Delays peak at the commutes** (5–8am and 4–6pm on weekdays) **and spike in winter** (Feb 2025, Jan 2026).
 - **Disorderly patrons are the top cause of lost time**, ahead of any equipment fault.
+- **Weekend delays mainly due to operational/maintenance issues/delays
 
 ## How it works
 
