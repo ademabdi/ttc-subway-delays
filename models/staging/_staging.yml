@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: stg_delay_codes
+    description: Delay code lookup, one row per code, text encoding repaired.
+    columns:
+      - name: delay_code
+        description: Upper-cased, trimmed code. The join key.
+        data_tests:
+          - unique     # if a code appeared twice, the join would duplicate delays
+          - not_null
+
+  - name: stg_subway_delays
+    description: Typed and flagged delay records. No rows removed.
+    columns:
+      - name: delay_ts
+        description: Date + Time combined. Every analysis by time depends on it.
+        data_tests:
+          - not_null
+      - name: delay_code
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_delay_codes')
+                field: delay_code
+              config:
+                severity: warn   # known gap in TTC's lookup; report it, don't fail the build
+      - name: station_raw
+        description: Original Station text (upper-cased, trimmed).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('station_mapping')
+                field: raw_value
+              config:
+                severity: warn   # fires when a data refresh brings station spellings we haven't mapped yet
+      - name: station_name
+        description: Canonical station from the mapping. Null for line-level / facility / unmapped rows.
+      - name: station_line
+        description: The line this station record belongs to (YU / BD / SHP). Use with station_name to join ridership.
+      - name: station_mapping_type
+        description: How the station was mapped (EXACT, VARIANT, BETWEEN, ...). Filter out BETWEEN for strict per-station analysis.
+      - name: is_possible_duplicate
+        description: True when another row matches on every column except _id.

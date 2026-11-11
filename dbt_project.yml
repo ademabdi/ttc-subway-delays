@@ -1,0 +1,38 @@
+name: ttc
+version: "1.0.0"
+profile: ttc
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+
+seeds:
+  ttc:
+    # Spell out types so dbt doesn't guess (e.g. reading a raw value as a number)
+    stations:
+      +column_types:
+        station_name: varchar
+        line: varchar
+        line_number: integer
+    station_mapping:
+      +column_types:
+        raw_value: varchar
+        station_name: varchar
+        line: varchar
+        mapping_type: varchar
+        needs_review: varchar
+        rows_affected: integer
+        notes: varchar
+    station_ridership:
+      +column_types:
+        station_name: varchar
+        line: varchar
+        weekday_station_usage: integer
+        period: varchar
+        source: varchar
+
+models:
+  ttc:
+    staging:
+      +materialized: view   # cheap, always reflects raw
+    marts:
+      +materialized: table  # what dashboards / queries read

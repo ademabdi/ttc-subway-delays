@@ -1,0 +1,49 @@
+version: 2
+
+seeds:
+  - name: stations
+    description: >
+      Master list of TTC subway stations (Lines 1, 2, 4) at station + line grain.
+      Interchanges (Bloor-Yonge, St. George, Spadina, Sheppard-Yonge) appear once
+      per line. Uses current names: TMU (was Dundas), Cedarvale (was Eglinton West).
+
+  - name: station_mapping
+    description: >
+      Every raw Station value from the delay data -> a canonical station.
+      Drafted by scripts/build_station_mapping.py, then reviewed by hand.
+      rows_affected is a snapshot from when the draft was made.
+    columns:
+      - name: raw_value
+        data_tests:
+          - unique
+          - not_null
+      - name: mapping_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['EXACT', 'VARIANT', 'BETWEEN', 'LINE_LEVEL', 'FACILITY', 'UNMAPPED']
+      - name: station_name
+        description: Null when the value isn't one station (line-level, facility, unmapped).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stations')
+                field: station_name
+      - name: line
+        description: >
+          Line implied by the raw name ("ST GEORGE BD" -> BD). Null for an
+          interchange with no hint; staging then uses the record's Line column.
+
+  - name: station_ridership
+    description: >
+      TTC "Subway Ridership 2023-2024" table (typical weekday, Sep 2023 - Aug 2024),
+      extracted from the PDF in data/raw. Old names translated to the master list
+      (Dundas -> TMU, Eglinton West -> Cedarvale). Reconciled: each line's station
+      usage sums to exactly 2x the line's boardings.
+    columns:
+      - name: weekday_station_usage
+        description: >
+          Customers travelling to AND from the station platform on a typical weekday
+          (entries + exits), NOT boardings. Roughly 2x boardings.
+        data_tests:
+          - not_null

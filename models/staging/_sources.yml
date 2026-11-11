@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: CSVs loaded as-is (all text) by db.py / scripts/load.sql.
+    tables:
+      - name: subway_delays
+        description: TTC Subway Delay Data since 2025 (Toronto Open Data).
+      - name: delay_codes
+        description: Code Descriptions.csv - delay code lookup.

@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: fct_subway_delays
+    description: >
+      One row per delay event (same grain as stg_subway_delays) with the code
+      description joined on. Filter on is_zero_delay / is_possible_duplicate as
+      your analysis needs.
+    columns:
+      - name: delay_ts
+        data_tests:
+          - not_null
+      - name: has_code_description
+        description: False for the 11 codes TTC's lookup file doesn't define.
+
+  - name: mart_station_delay_rates
+    description: >
+      One row per station + line. Weekday delays relative to weekday station usage
+      (Sep 2023 - Aug 2024 ridership applied to 2025-2026 delays; assumes each
+      station's share of riders is stable). BETWEEN rows excluded.
+    columns:
+      - name: weekday_station_usage
+        data_tests:
+          - not_null
+      - name: delay_incidents_per_100k_users
+        description: Weekday incidents with min_delay > 0, per day, per 100k station users.
+      - name: minutes_lost_per_100k_users
+        description: Weekday minutes of delay, per day, per 100k station users.

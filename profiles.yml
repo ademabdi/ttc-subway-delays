@@ -1,0 +1,9 @@
+# Kept in the project so you can run:  dbt build --profiles-dir .
+# The path is relative to where you run dbt (the project root).
+ttc:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ttc.duckdb
+      threads: 1

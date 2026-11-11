@@ -1,0 +1,33 @@
+import requests, pathlib
+import duckdb
+
+
+BASE = "https://ckan0.cf.opendata.inter.prod-toronto.ca"
+pkg = requests.get(f"{BASE}/api/3/action/package_show",
+                   params={"id": "ttc-subway-delay-data"}, timeout=30).json()
+
+wanted = {
+    "Code Descriptions.csv",
+    "ttc-subway-delay-codes",
+    "ttc-subway-delay-data-readme",
+}
+
+# folder the files get saved into (this is where `raw` comes from)
+raw = pathlib.Path("data/raw")
+raw.mkdir(parents=True, exist_ok=True)
+
+for r in pkg["result"]["resources"]:
+    if r["name"] in wanted:
+        # print(r["id"], "|", r.get("name"), "|", r.get("format"),
+        #     "|", r.get("last_modified"), "|", r.get("datastore_active"))
+        ext = r["format"].lower()
+        name = r["name"] if r["name"].lower().endswith("." + ext) else f'{r["name"]}.{ext}'
+        out = raw / name.replace(" ", "_")
+        out.write_bytes(requests.get(r["url"], timeout=60).content)
+        print("saved", out, r.get("last_modified"))
+
+con = duckdb.connect()
+for f in ["data/raw/TTC_Subway_Delay_Data_since_2025.csv", "data/raw/Code_Descriptions.csv"]:
+    print(f)
+    print(con.sql(f"DESCRIBE SELECT * FROM read_csv('{f}', all_varchar=true)").df()[["column_name"]])
+    print(con.sql(f"SELECT * FROM read_csv('{f}', all_varchar=true) LIMIT 5").df(), "\n")
