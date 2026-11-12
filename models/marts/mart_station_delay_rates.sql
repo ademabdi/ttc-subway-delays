@@ -3,7 +3,7 @@
 --
 -- Choices (see docs/decisions.md):
 --   * weekdays only, because the ridership figure is a typical weekday
---   * station rows only; BETWEEN ("A TO B") rows left out for a strict per-station view
+--   * "A TO B" rows count toward the first station named (decision #12)
 --   * delays are summarised to station + line FIRST, then joined to ridership
 --     (one row per incident vs one number per station: different grains)
 --   * start from the station list so stations with zero delays still appear
@@ -31,7 +31,7 @@ by_station as (
     from weekday_delays
     where station_name is not null
       and station_line is not null
-      and station_mapping_type <> 'BETWEEN'
+    --   and station_mapping_type <> 'BETWEEN'
     group by 1, 2
 )
 
