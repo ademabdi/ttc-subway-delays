@@ -4,7 +4,9 @@ An end-to-end analytics pipeline on Toronto's subway delay data: raw CSVs in, te
 
 **Stack:** Python · DuckDB · dbt · Streamlit
 
-![Dashboard](docs/dashboard.png)
+![Dashboard](docs/dashboard1.png)
+![Dashboard](docs/dashboard2.png)
+
 
 ## What it found
 
@@ -13,6 +15,7 @@ An end-to-end analytics pipeline on Toronto's subway delay data: raw CSVs in, te
 - **Delays peak at the commutes** (5–8am and 4–6pm on weekdays) **and spike in winter** (Feb 2025, Jan 2026).
 - **Disorderly patrons are the top cause of lost time**, ahead of any equipment fault.
 - **The first hour of service has different causes from the rest of the day.** Track work zones and rail problems lead, not passengers, which points to overnight maintenance running into the start of service. Sunday at 8am is the worst hour of the week. Queries: [analysis/service_start.sql](analysis/service_start.sql)
+![Dashboard](docs/dashboard3.png)
 
 ## How it works
 
