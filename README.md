@@ -84,7 +84,7 @@ docs/            data profile and decision log
 
 - Per-rider rates describe how often things go wrong at a station relative to local use, not passenger impact: a delay at a small station also holds up everyone riding through it.
 - Ridership is from 2023–24 and delays from 2025–26. Rankings assume each station's share of riders is stable.
-- "A to B" locations (0.9% of incidents) are left out of the per-station rates.
+
 
 ## Next
 
